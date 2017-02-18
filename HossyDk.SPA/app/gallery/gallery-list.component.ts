@@ -42,11 +42,16 @@ export class GalleryListComponent implements OnInit {
 
     addGallery(galleryName: string) {
         var existingElm = this.galleries.filter(gallery => gallery.name.toLowerCase() == galleryName.toLowerCase());
-        if (galleryName !== '' && existingElm === undefined) {
-            this.galleries.push({ name: galleryName, noOfImages: 0 });
-        } else {
-            console.log('element with that name exists: ' + existingElm);
-        }
+        //if (galleryName !== '' && existingElm === undefined) {
+        //    this.galleries.push({ name: galleryName, noOfImages: 0 });
+        //} else {
+        //    console.log('element with that name exists: ' + existingElm);
+        //}
+        console.log('...calling web api')
+        this.galleryListService.addGallery(galleryName)
+            .subscribe(
+            res => console.log('res from list-component'),
+            error => this.errorMessage = <any>error);
     }
 
     deleteGallery(idx: number) {

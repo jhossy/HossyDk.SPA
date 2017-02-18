@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -7,13 +7,25 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class GalleryListService {
-    private serviceUrl = 'http://spa.hossy.dk/api/imageupload/GetGalleries';
+    private serviceUrl = 'http://spa.hossy.dk/api/imageupload/';
 
     constructor(private http: Http) {}
 
     getGalleries(): Observable<Gallery[]> {
-        return this.http.get(this.serviceUrl)
+        return this.http.get(this.serviceUrl + 'GetGalleries')
             .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+    addGallery(galleryName: string): Observable<Response> {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        return this.http.post(this.serviceUrl + 'AddGallery', { name: galleryName }, { headers: headers })
+            .map((res: Response) => res.json())
+            //.subscribe(res => {
+            //    console.log(res);
+            //})
             .catch(this.handleError);
     }
 

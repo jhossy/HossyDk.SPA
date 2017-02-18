@@ -1,3 +1,5 @@
+*.config
+
 .idea
 node_modules
 jspm_packages

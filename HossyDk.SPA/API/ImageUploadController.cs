@@ -3,6 +3,7 @@ using HossyDk.Library.Repositories;
 using HossyDk.Library.Utils;
 using HossyDk.SPA.Models;
 using HossyDk.SPA.Models.Providers;
+using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -14,6 +15,7 @@ using System.Web.Http;
 
 namespace HossyDk.SPA.API
 {
+    [RoutePrefix("api/imageupload")]
     public class ImageUploadController : ApiController
     {
         private IImageRepository _imageRepository;
@@ -40,6 +42,7 @@ namespace HossyDk.SPA.API
         }
 
         [HttpPost]
+        [Route("UploadImage")]
         public async Task<HttpResponseMessage> UploadImage()
         {
             if (!Request.Content.IsMimeMultipartContent())
@@ -74,6 +77,73 @@ namespace HossyDk.SPA.API
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
+        }
+
+        [NonAction]
+        private string GetImageRootDir()
+        {
+            string configSetting = ConfigurationManager.AppSettings["imageUploadFolder"];
+
+            if (string.IsNullOrEmpty(configSetting))
+            {
+                throw new NullReferenceException("imageUploadFolder not set in appSettings");
+            }
+
+            return HttpContext.Current.Server.MapPath(configSetting);
+        }
+
+        [HttpPost] 
+        [Route("AddGallery")]       
+        public HttpResponseMessage AddGallery(AddGalleryPostObject postData)
+        {
+            string galleryRoot = GetImageRootDir();
+
+            if (string.IsNullOrEmpty(galleryRoot))
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+
+            if (string.IsNullOrEmpty(postData.Name))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "A galleryname has to be supplied");
+            }
+
+            string newDir = Path.Combine(galleryRoot, postData.Name);
+
+            if (Directory.Exists(newDir))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Directory already exists");
+            }
+
+            Directory.CreateDirectory(newDir);
+
+            return Request.CreateResponse(HttpStatusCode.OK, "Directory created");
+        }
+
+        public HttpResponseMessage RemoveGallery(string name)
+        {
+            string galleryRoot = GetImageRootDir();
+
+            if (string.IsNullOrEmpty(galleryRoot))
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "A galleryname has to be supplied");
+            }
+
+            string newDir = Path.Combine(galleryRoot, name);
+
+            if (!Directory.Exists(newDir))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Directory does not exist");
+            }
+
+            Directory.Delete(newDir);
+
+            return Request.CreateResponse(HttpStatusCode.OK, "Directory deleted");
         }
     }
 }
