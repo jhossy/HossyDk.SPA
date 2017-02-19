@@ -32,6 +32,7 @@ namespace HossyDk.SPA.API
         }
 
         [HttpGet]
+        [Route("GetGalleries")]
         public ApiObject GetGalleries()
         {
             IImageDirectoryInfo[] galleryInfo = _imageRepository.GetImageDirectories(includeImageCount: true); //todo: add caching            
@@ -82,7 +83,7 @@ namespace HossyDk.SPA.API
         [NonAction]
         private string GetImageRootDir()
         {
-            string configSetting = ConfigurationManager.AppSettings["imageUploadFolder"];
+            string configSetting = ConfigurationManager.AppSettings["ImageRoot"];
 
             if (string.IsNullOrEmpty(configSetting))
             {
@@ -94,7 +95,7 @@ namespace HossyDk.SPA.API
 
         [HttpPost] 
         [Route("AddGallery")]       
-        public HttpResponseMessage AddGallery(AddGalleryPostObject postData)
+        public HttpResponseMessage AddGallery(GalleryPostObject postData)
         {
             string galleryRoot = GetImageRootDir();
 
@@ -120,7 +121,9 @@ namespace HossyDk.SPA.API
             return Request.CreateResponse(HttpStatusCode.OK, "Directory created");
         }
 
-        public HttpResponseMessage RemoveGallery(string name)
+        [HttpPost]
+        [Route("RemoveGallery")]
+        public HttpResponseMessage RemoveGallery(GalleryPostObject postData)
         {
             string galleryRoot = GetImageRootDir();
 
@@ -129,12 +132,12 @@ namespace HossyDk.SPA.API
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(postData.Name))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "A galleryname has to be supplied");
             }
 
-            string newDir = Path.Combine(galleryRoot, name);
+            string newDir = Path.Combine(galleryRoot, postData.Name);
 
             if (!Directory.Exists(newDir))
             {

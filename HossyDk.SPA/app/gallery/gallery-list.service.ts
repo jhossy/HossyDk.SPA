@@ -29,6 +29,15 @@ export class GalleryListService {
             .catch(this.handleError);
     }
 
+    deleteGallery(galleryName: string): Observable<Response> {
+        var headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        return this.http.post(this.serviceUrl + 'RemoveGallery', { name: galleryName }, { headers: headers })
+            .map((res: Response) => res.json())
+            .catch(this.handleError);
+    }
+
     private extractData(res: Response) {
         let body = res.json();
         return body.data || {};

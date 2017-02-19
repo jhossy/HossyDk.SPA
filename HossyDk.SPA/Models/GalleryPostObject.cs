@@ -5,7 +5,7 @@ using System.Web;
 
 namespace HossyDk.SPA.Models
 {
-    public class AddGalleryPostObject
+    public class GalleryPostObject
     {
         public string Name { get; set; }
     }

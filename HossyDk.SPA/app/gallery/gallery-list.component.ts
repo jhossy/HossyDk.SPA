@@ -47,15 +47,21 @@ export class GalleryListComponent implements OnInit {
         //} else {
         //    console.log('element with that name exists: ' + existingElm);
         //}
-        console.log('...calling web api')
         this.galleryListService.addGallery(galleryName)
             .subscribe(
-            res => console.log('res from list-component'),
+            res => this.galleries.push({ name : galleryName, noOfImages : 0 }),
             error => this.errorMessage = <any>error);
     }
 
     deleteGallery(idx: number) {
-        this.galleries.splice(idx, 1);
+        var galleryElm = this.galleries[idx];
+
+        if (galleryElm != null) {
+            this.galleryListService.deleteGallery(galleryElm.name)
+                .subscribe(
+                res => this.galleries.splice(idx, 1),
+                error => this.errorMessage = <any>error);
+        }
     }
 
     selectGallery(gallery: Gallery) {
