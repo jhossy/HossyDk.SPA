@@ -8,7 +8,7 @@
             <gallery-list></gallery-list>
         </div>
         <div class="col-md-8 round-corners">
-            drag n drop area here
+            <gallery-drag-n-drop></gallery-drag-n-drop>
         </div>        
     </div>
     `,

@@ -1,0 +1,42 @@
+﻿ .container {
+    width: 100%;
+    max-width: 680px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+    display: none;
+}
+        
+.box {
+    font-size: 1.25rem;
+    background-color: #c8dadf;
+    position: relative;
+    padding: 100px 20px;
+}
+
+.box.has-advanced-upload {
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
+}
+
+.box.has-advanced-upload .box__dragndrop {
+    display: inline;
+}
+
+.box.is-dragover {
+    background-color: grey;
+}
+
+.box.is-uploading .box__input {
+    visibility: none;
+}
+
+.box.is-uploading .box__uploading {
+    display: block;
+}

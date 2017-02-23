@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'my-app',
   template: `
         <div>
-            <div class="row round-corners spacing top-menu">
+            <div class="row round-corners spacing top-menu bg-gradient">
                 <top-menu>Top menu here...</top-menu>
             </div>
             <div class="row spacing">                

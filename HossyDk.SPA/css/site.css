@@ -7,6 +7,10 @@ h1{
     vertical-align: middle;
 }
 
+.bg-gradient{
+    background: linear-gradient(#56585D, #2F3034);
+}
+
 .round-corners{
     border: 1px solid #c8c8c8;
     border-radius: 10px;

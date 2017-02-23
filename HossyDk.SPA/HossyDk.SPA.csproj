@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.component.css" />
+    <Content Include="app\gallery\gallery-drag-n-drop.component.css" />
     <Content Include="app\gallery\gallery-list.component.css" />
     <Content Include="app\navigation\top-menu.component.css" />
     <Content Include="css\site.css" />
@@ -146,6 +147,7 @@
     <TypeScriptCompile Include="app\app.component.spec.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
+    <TypeScriptCompile Include="app\gallery\gallery-drag-n-drop.component.ts" />
     <TypeScriptCompile Include="app\gallery\gallery-list.component.ts" />
     <TypeScriptCompile Include="app\gallery\gallery-list.service.ts" />
     <TypeScriptCompile Include="app\gallery\gallery.component.ts" />
