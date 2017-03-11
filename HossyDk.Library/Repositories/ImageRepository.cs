@@ -2,6 +2,7 @@
 using System;
 using System.Web;
 using System.IO;
+using System.Collections.Generic;
 
 namespace HossyDk.Library.Repositories
 {
@@ -43,18 +44,17 @@ namespace HossyDk.Library.Repositories
                 Directory.CreateDirectory(rootDir);
             }
 
-            string[] fullPathDirs = Directory.GetDirectories(rootDir, "*", System.IO.SearchOption.AllDirectories);
-            ImageDirectoryInfo[] result = new ImageDirectoryInfo[fullPathDirs.Length];
-
-            for(int i = 0; i < result.Length; i++)
+            DirectoryInfo rootDirectory = new DirectoryInfo(rootDir);
+            
+            DirectoryInfo[] dirs = rootDirectory.GetDirectories("*", SearchOption.TopDirectoryOnly);
+            List<ImageDirectoryInfo> result = new List<ImageDirectoryInfo>();
+            
+            foreach(DirectoryInfo dir in dirs)
             {
-                result[i] = new ImageDirectoryInfo()
-                {
-                    name = Path.GetFileName(fullPathDirs[i]), //todo : add support for multiple levels of directories
-                    noOfImages = Directory.GetFiles(fullPathDirs[i]).Length
-                };
+                result.Add(new ImageDirectoryInfo(dir));
             }
-            return result;
-        }
+
+            return result.ToArray();
+        }        
     }
 }

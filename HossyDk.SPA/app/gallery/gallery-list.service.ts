@@ -11,7 +11,7 @@ export class GalleryListService {
 
     constructor(private http: Http) {}
 
-    getGalleries(): Observable<Gallery[]> {
+    getGalleries(): Observable<IImageDirectoryInfo[]> {
         return this.http.get(this.serviceUrl + 'GetGalleries')
             .map(this.extractData)
             .catch(this.handleError);
@@ -40,6 +40,7 @@ export class GalleryListService {
 
     private extractData(res: Response) {
         let body = res.json();
+        console.log(body.data);
         return body.data || {};
     }
 
@@ -58,7 +59,8 @@ export class GalleryListService {
     }
 }
 
-interface Gallery {
+interface IImageDirectoryInfo {
     name: string;
     noOfImages: number;
+    subDirectories: IImageDirectoryInfo[]
 }

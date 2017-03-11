@@ -1,9 +1,15 @@
-﻿namespace HossyDk.Library.Interfaces
+﻿using System.IO;
+
+namespace HossyDk.Library.Interfaces
 {
     public interface IImageDirectoryInfo
     {
-        string name { get; set; }
+        DirectoryInfo directory { get; }
 
-        int noOfImages { get; set; }
+        string name { get; }
+
+        int noOfImages { get; }
+
+        IImageDirectoryInfo[] subDirectories { get; }
     }
 }

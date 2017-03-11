@@ -10,7 +10,12 @@ import { Observable } from 'rxjs/Observable';
         <div>
             <h2>Selected gallery: {{selectedGallery.name}}</h2>
             <ul *ngFor='let gallery of galleries; let i = index'>
-                <li class="gallery-list-item" (click)='selectGallery(gallery)'>{{gallery.name}} ({{gallery.noOfImages}} images) <button (click)='deleteGallery(i)'>X</button></li>
+                <li class="gallery-list-item" (click)='selectGallery(gallery)'>
+                    {{gallery.name}} ({{gallery.noOfImages}} images)<button (click)='deleteGallery(i)'>X</button>
+                    <ul *ngFor='let subdirectory of gallery.subDirectories'>
+                        <li>{{subdirectory.name}} ({{subdirectory.noOfImages}} images)</li>
+                    </ul>
+                </li>
             </ul>
             <button (click)='addGallery(gallery.value)'>Add gallery</button><br />
             <input type='text' placeholder='enter gallery name' #gallery />            
@@ -20,8 +25,8 @@ import { Observable } from 'rxjs/Observable';
     providers: [GalleryListService]
 })
 export class GalleryListComponent implements OnInit {
-    galleries: Gallery[];
-    selectedGallery: Gallery;
+    galleries: IImageDirectoryInfo[];
+    selectedGallery: IImageDirectoryInfo;
     errorMessage: string;
 
     ngOnInit(): void {
@@ -37,7 +42,7 @@ export class GalleryListComponent implements OnInit {
 
     constructor(private galleryListService: GalleryListService) {
         this.galleries = [];
-        this.selectedGallery = { name: '', noOfImages : 0 };
+        this.selectedGallery = { name: '', noOfImages: 0, subDirectories: null };
     }
 
     addGallery(galleryName: string) {
@@ -49,7 +54,7 @@ export class GalleryListComponent implements OnInit {
         //}
         this.galleryListService.addGallery(galleryName)
             .subscribe(
-            res => this.galleries.push({ name : galleryName, noOfImages : 0 }),
+            res => this.galleries.push({ name: galleryName, noOfImages: 0, subDirectories: null }),
             error => this.errorMessage = <any>error);
     }
 
@@ -64,7 +69,7 @@ export class GalleryListComponent implements OnInit {
         }
     }
 
-    selectGallery(gallery: Gallery) {
+    selectGallery(gallery: IImageDirectoryInfo) {
         console.log(gallery.name);
         this.selectedGallery = gallery;
     }
@@ -79,7 +84,8 @@ export class GalleryListComponent implements OnInit {
     }
 }
 
-interface Gallery {
+interface IImageDirectoryInfo {
     name: string;
     noOfImages: number;
+    subDirectories: IImageDirectoryInfo[]
 }
