@@ -8,6 +8,7 @@ using FluentAssertions;
 using System.Linq;
 using Ploeh.AutoFixture.Xunit2;
 using System;
+using System.Text;
 
 namespace HossyDk.Library.Tests.Infrastructure.Account
 {
@@ -139,8 +140,7 @@ namespace HossyDk.Library.Tests.Infrastructure.Account
             sut.Login(newUser).Should().BeFalse();
         }
 
-        [Theory]
-        [InlineAutoData()]
+        [Fact]
         public void ItShouldAddSaltToPassword()
         {
             //arrange
@@ -149,10 +149,28 @@ namespace HossyDk.Library.Tests.Infrastructure.Account
             var sut = new AccountService(_userRepository);
 
             //act
-            string saltedPassword = sut.SaltPassword(password, salt);
+            string saltedPassword = sut.GenerateSaltedHash(password, salt.ToString());
 
             //assert
-            saltedPassword.Should().Be(salt + password + salt);
+            saltedPassword.Should().NotBeSameAs(password);
+        }
+
+        [Theory]
+        [InlineData("password", "DRE+heCAFEEhwYytguKvB8QEU13ge0/l1cy3NUObobI=")]
+        public void ItShouldBeEqualPasswords(
+            string password, 
+            string validPassword)
+        {
+            //arrange
+            var sut = new AccountService(_userRepository);
+            string passwordSalt = "{AB48CF31-9A13-4E2C-9F47-571DC6531C25}";
+
+            //act
+            string saltedPassword = sut.GenerateSaltedHash(password, passwordSalt);
+            bool areEqual = sut.ComparePasswords(saltedPassword, validPassword);
+
+            //assert
+            areEqual.Should().BeTrue();
         }
     }
 

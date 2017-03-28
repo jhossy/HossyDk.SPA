@@ -2,13 +2,14 @@
 using HossyDk.Library.Interfaces;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace HossyDk.Library.Infrastructure.Account
 {
     public class AccountService
     {
         private IRepository<User> _userRepository;
-        private readonly Guid _passwordSalt = new Guid("{EDA99575-5689-4899-B755-D196243DC3AA}");
 
         public AccountService(IRepository<User> userRepository)
         {
@@ -31,10 +32,31 @@ namespace HossyDk.Library.Infrastructure.Account
 
             return userFound != null;
         }
-        
-        public string SaltPassword(string password, Guid salt)
+
+        public string GenerateSaltedHash(string plainText, string salt)
         {
-            return string.Format("{0}{1}{0}", salt, password, salt);            
+            HashAlgorithm algorithm = new SHA256Managed();
+
+            byte[] plainTextArray = Encoding.UTF8.GetBytes(plainText);
+            byte[] saltArray = Encoding.UTF8.GetBytes(salt);
+
+            byte[] plainTextWithSaltBytes = new byte[plainTextArray.Length + saltArray.Length];
+
+            for (int i = 0; i < plainTextArray.Length; i++)
+            {
+                plainTextWithSaltBytes[i] = plainTextArray[i];
+            }
+            for (int i = 0; i < saltArray.Length; i++)
+            {
+                plainTextWithSaltBytes[plainText.Length + i] = saltArray[i];
+            }
+
+            return Convert.ToBase64String(algorithm.ComputeHash(plainTextWithSaltBytes));
+        }
+
+        public bool ComparePasswords(string password, string validPassword)
+        {
+            return password.Equals(validPassword, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
