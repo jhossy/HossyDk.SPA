@@ -8,6 +8,7 @@ namespace HossyDk.Library.Infrastructure.Account
     public class AccountService
     {
         private IRepository<User> _userRepository;
+        private readonly Guid _passwordSalt = new Guid("{EDA99575-5689-4899-B755-D196243DC3AA}");
 
         public AccountService(IRepository<User> userRepository)
         {
@@ -29,6 +30,11 @@ namespace HossyDk.Library.Infrastructure.Account
                 );
 
             return userFound != null;
+        }
+        
+        public string SaltPassword(string password, Guid salt)
+        {
+            return string.Format("{0}{1}{0}", salt, password, salt);            
         }
     }
 }

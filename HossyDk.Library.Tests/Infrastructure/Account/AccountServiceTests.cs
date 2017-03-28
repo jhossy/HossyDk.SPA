@@ -6,6 +6,8 @@ using HossyDk.Library.Account.Infrastructure;
 using System.Collections.Generic;
 using FluentAssertions;
 using System.Linq;
+using Ploeh.AutoFixture.Xunit2;
+using System;
 
 namespace HossyDk.Library.Tests.Infrastructure.Account
 {
@@ -135,6 +137,22 @@ namespace HossyDk.Library.Tests.Infrastructure.Account
 
             //assert
             sut.Login(newUser).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineAutoData()]
+        public void ItShouldAddSaltToPassword()
+        {
+            //arrange
+            string password = "newpassword";
+            Guid salt = Guid.NewGuid();
+            var sut = new AccountService(_userRepository);
+
+            //act
+            string saltedPassword = sut.SaltPassword(password, salt);
+
+            //assert
+            saltedPassword.Should().Be(salt + password + salt);
         }
     }
 
